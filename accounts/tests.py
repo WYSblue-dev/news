@@ -70,3 +70,4 @@ class SignUpTests(TestCase):
         self.assertEqual(get_user_model().objects.all().count(), 1)
         self.assertEqual(get_user_model().objects.all()[0].username, "test_user")
         self.assertEqual(get_user_model().objects.all()[0].email, "example@example.com")
+        self.assertEqual(get_user_model().objects.all()[0].age, 25)
