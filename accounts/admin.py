@@ -18,6 +18,7 @@ class CustomUserAdmin(UserAdmin):
         "is_staff",
     ]
 
+    # this would change in django 6.0 due to the usable password field on AU mod
     add_fieldsets = UserAdmin.add_fieldsets + ((None, {"fields": ("age",)}),)
     fieldsets = UserAdmin.fieldsets + ((None, {"fields": ("age",)}),)
 
