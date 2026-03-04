@@ -18,10 +18,20 @@ dowm futher by simply combining them with the main card class */
 
 /* this is a custom rule we added for playing with text shadow on text to 
 alter */
-.text-shadow-glow {
+.text-shadow-glow-green {
     text-shadow: 1px 1px 2px lime;
 }
 
+.text-shadow-glow-blue {
+    display: block;
+    max-width: 400px;
+    margin: 3rem auto;
+    padding: 1rem 2rem;
+    background-color: black;
+    color: blanchedalmond;
+    text-shadow: 3px 3px 5px rgb(43, 0, 255);
+    border-radius: 1rem;
+}
 /* thos is another override I believe for the purpose of styling the default
 btn class that bootstrap provides. */
 .btn-shadow {
@@ -30,9 +40,12 @@ btn class that bootstrap provides. */
 
 /* This is a custom class we created and anticipate using on our update forms */
 .update-form label {
-    color: red;
-    background-color: gray;
+    color: white;
+    background-color: brown;
     text-shadow: 2px 2px 2px black;
+    font-size: 2.25rem;
+    border-radius: 1rem;
+
 }
 
 /* form-text should be the default styling that bootstrap5 uses and this is a
@@ -52,8 +65,13 @@ styling */
     /* margin here added more padding with the auto does both left and right */
     margin: 3rem auto;   /* auto left/right centers it, 3rem top/bottom */
     /* this side padding for small screens */
-    padding: 0 1rem;     /* optional: a bit of side padding on small screens */
+    padding: 1rem 1rem;     /* optional: a bit of side padding on small screens */
+    
 }
 
 /* worth noting right now that we can use the widgets of the form we override
 to be able to chace the text-area */
+
+.form-text {
+    color: coral;
+}

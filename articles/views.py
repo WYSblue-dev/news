@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView
-from django.views.generic.edit import DeleteView, UpdateView
+from django.views.generic.edit import DeleteView, UpdateView, CreateView
 from .models import Article
 from .forms import ArticleModelForm
 
@@ -30,4 +30,17 @@ class ArticleUpdateView(UpdateView):
 class ArticleDeleteView(DeleteView):
     model = Article
     template_name = "article_delete.html"
+    success_url = reverse_lazy("article_list")
+
+
+class ArticleCreateView(CreateView):
+    model = Article
+    fields = [
+        "title",
+        "body",
+        "author",
+    ]
+    template_name = "article_create.html"
+    # we could have left this blank to be able to accomadate the get_absolute_url
+    # if we didn't have the get abs we shall specify this accordingly.
     success_url = reverse_lazy("article_list")

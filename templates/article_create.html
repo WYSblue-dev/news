@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+Artcle Create
+{% endblock title %}
+
+{% block content %}
+<div class="card card-spaced card-border">
+    <div class="card-header">
+        <h1 class="danger-text text-center">Article Creation</h1>
+    </div>
+    <div class="card-body">
+        <form class="update-form"action="" method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="card-footer">
+                <button class="btn btn-primary text-center" type="submit">
+                    Create Article
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
