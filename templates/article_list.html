@@ -10,7 +10,7 @@ Articles
             {% for article in article_list %}
                 <div class="card-header">
                     <span class="fw-bold">
-                        {{ article.title }}
+                        <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
                     </span> &middot;
                     <span class="text-muted">by {{ article.author }} |
                         <!-- the A gives us the am or pm whereas g is the hour with no leading
@@ -22,7 +22,7 @@ Articles
                     {{ article.body }}
                 </div>
                 <div class="card-footer text-center text-muted">
-                    <a href="#">Edit</a> | <a href="#">Delete</a>
+                    <a href="{% url 'article_edit' article.pk %}">Edit</a> | <a href="{% url 'article_delete' article.pk %}">Delete</a>
                 </div>
                 <br />
             {% empty %}

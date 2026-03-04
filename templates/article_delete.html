@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="card card-spaced">
+    <div class="card-header text-center mt-5">
+        <!-- use of the class styling can be used on a lot of elements. -->
+        <h1 class="text-warning text-shadow-glow">YOU ARE ABOUT TO DELETE "{{ article.title }}"!!!</h1>
+    </div>
+    <div class="card-body text-center">
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <!-- why do we use the name attribute again? -->
+            <button name='delete' class='btn btn-danger btn-shadow' type="submit">Delete</button>
+        </form>
+    </div>
+    <div class="card-footer text-center">
+        <h3 class="danger-text">Back to <a href="{% url 'article_list' %}">Articles</a></h3>
+    </div>
+</div>
+{% endblock content %}

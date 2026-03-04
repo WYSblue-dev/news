@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-header text-center mt-4">
+            <h3>
+                {{ article.title }} | {{ article.date }}
+            </h3>
+        </div>
+        <div class="card-body">
+            <!-- where does the fw-bold class come from? -->
+            <span class="fw-bold">
+                <p>
+                    {{ article.body }}
+                </p>
+            </span>
+        </div>
+        <div class="card-footer text-center text-muted">
+            <a href="{% url 'article_edit' article.pk %}">Edit</a> |
+             <a href="{% url 'article_delete' article.pk %}">Delete</a>
+        </div>
+    </div>
+    <div>
+        <p>
+            Back to <a href="{% url 'article_list' %}">All Articles</a>
+        </p>
+    </div>
+{% endblock content %}
