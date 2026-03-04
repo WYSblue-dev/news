@@ -25,6 +25,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("accounts.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
+    path("articles/", include("articles.urls")),
     # here is the temp use of the gcbv. Note the use of the template name use
     # will be removed later.
     # path("", TemplateView.as_view(template_name="home.html"), name="home"),
