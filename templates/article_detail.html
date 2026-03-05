@@ -16,8 +16,11 @@
             </span>
         </div>
         <div class="card-footer text-center text-muted">
-            <a href="{% url 'article_edit' article.pk %}">Edit</a> |
-             <a href="{% url 'article_delete' article.pk %}">Delete</a>
+            <!-- take note this is possible because we're working directly with the obj -->
+            {% if article.author.pk == request.user.pk %}
+                <a href="{% url 'article_edit' article.pk %}">Edit</a> |
+                 <a href="{% url 'article_delete' article.pk %}">Delete</a>
+            {% endif %}
         </div>
     </div>
     <div>
