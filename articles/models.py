@@ -46,3 +46,36 @@ class Article(models.Model):
         # pk means primary key also known as an id. This instance connection
         # lets us then pass in the value the url convertor needs.
         return reverse("article_detail", kwargs={"pk": self.pk})
+
+
+# it should be retouched on that there are three types of foreignkey relations
+# one to one one to many and many to one.
+class Comment(models.Model):
+    # This is going to be the class that ties to the model comments to the
+    # Article model which let's the user then add comments to posted articles.
+    # We will also want to be able to let the user who creates the comment to
+    # be able to edit it. Maybe not delete it however.
+    # The viewing functionality can be done throough security as well as the
+    # htmltemplate itself
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    article = models.ForeignKey(
+        Article,
+        on_delete=models.CASCADE,
+    )
+    # using the character field here is nice because it limits the amount of
+    # text the user cant enter. This means maybe we can display this?
+    comment = models.CharField(max_length=140)
+    date_added = models.DateTimeField(auto_now_add=True)
+    # this gives us the corerct spelling to be displayed in the admin interface
+    VERBOSE_NAME_PLURAL = "comments"
+
+    def __str__(self):
+        return f"{self.comment[:15]}..."
+
+    def get_absolute_url(self):
+        # pointing to article_list makes sense because that is where the
+        # comments will reside. The won't have their own page. Only a form page
+        return reverse("article_list")

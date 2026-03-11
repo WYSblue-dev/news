@@ -1,10 +1,12 @@
 from django.shortcuts import render
-from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, DetailView
+from django.urls import reverse_lazy, reverse
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic import ListView, DetailView, FormView
 from django.views.generic.edit import DeleteView, UpdateView, CreateView
+from django.views.generic import View
+from django.views.generic.detail import SingleObjectMixin
 from .models import Article
-from .forms import ArticleModelForm
+from .forms import ArticleModelForm, CommentForm
 
 # the purpose of userpassestestmixin is to denie the wrong user from trying to
 # edit a article that isn't theirs returning an http403 forbidden.
@@ -27,11 +29,6 @@ from django.http import Http404
 class ArticleListView(LoginRequiredMixin, ListView):
     model = Article
     template_name = "article_list.html"
-
-
-class ArticleDetailView(LoginRequiredMixin, DetailView):
-    model = Article
-    template_name = "article_detail.html"
 
 
 class ArticleUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -125,3 +122,66 @@ class ArticleCreateView(LoginRequiredMixin, CreateView):
 # is fliterd is equal to the request.user, if it isn't we raise an Http404.
 # After that we then move into the use of UserPassesTestMixin which just recalls
 # a redundent get_object.
+
+
+# will be used for the purpose of handling the get request state for the
+# parent/inherited View class.
+# displays an empty form
+class CommentGet(DetailView):
+    model = Article
+    template_name = "article_detail.html"
+
+    # gives us access to the empty form state.
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = CommentForm()
+        return context
+
+    # will be used for the purpose of rendering and handling a post request in
+    # the wrapper for a View extension/inheritence cycle.
+    # process the user submitted data
+
+
+# used to handle the post state of the form submition from the article_detail
+# page
+class CommentPost(SingleObjectMixin, FormView):
+    model = Article
+    form_class = CommentForm
+    template_name = "artcle_detail.html"
+
+    # why do we pass what we do we can infer...
+    def post(self, request, *args, **kwargs):
+        # use get object to assign the object/Model
+        self.object = self.get_object()
+        # why do we pass what we do we can infer...
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        comment = form.save(commit=False)
+        # set the model we want to tie this comment model to.
+        comment.article = self.object
+        # set the author of this comment to the request user.
+        comment.author = self.request.user
+        # save to the db
+        comment.save()
+        # make a call to the super form to finish its process?
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        # obtain the object through the object from the posted post data
+        article = self.object
+        # call the url by name with the proper pk from the object
+        return reverse("article_detail", kwargs={"pk": article.pk})
+
+
+class ArticleDetailView(LoginRequiredMixin, View):
+    model = Article
+    template_name = "article_detail.html"
+
+    def get(self, request, *args, **kwargs):
+        view = CommentGet.as_view()
+        return view(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        view = CommentPost.as_view()
+        return view(request, *args, **kwargs)

@@ -1,31 +1,47 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% block content %}
     <div class="card">
         <div class="card-header text-center mt-4">
             <h3>
-                {{ article.title }} | {{ article.date }}
+                {{ article.title }} | {{ article.date|date:'M d Y, g:i A' }}
             </h3>
         </div>
         <div class="card-body">
             <!-- where does the fw-bold class come from? -->
-            <span class="fw-bold">
+            <span class="fw-bold text-center">
                 <p>
                     {{ article.body }}
+                    <!-- take note this is possible because we're working directly with the obj -->
+                    {% if article.author.pk == request.user.pk %}
+                        <br/>
+                        <a href="{% url 'article_edit' article.pk %}">Edit</a> |
+                        <a href="{% url 'article_delete' article.pk %}">Delete</a>
+                    {% endif %}
                 </p>
             </span>
         </div>
+
         <div class="card-footer text-center text-muted">
-            <!-- take note this is possible because we're working directly with the obj -->
-            {% if article.author.pk == request.user.pk %}
-                <a href="{% url 'article_edit' article.pk %}">Edit</a> |
-                 <a href="{% url 'article_delete' article.pk %}">Delete</a>
-            {% endif %}
+            <h4><b>Comments</b></h4>
+            {% for comment in article.comment_set.all %}
+                <!-- if we didn't use a format str to shorten comment only -->
+                {{ comment.comment }} &middot;
+                <br/>
+                {{ comment.date_added|date:'M Y, g:i A'}}
+                <br/>
+                {{ comment.author|upper }}
+            {% empty %}
+                <b>NO COMMENTS</b>
+            {% endfor %}
         </div>
-    </div>
-    <div>
-        <p>
-            Back to <a href="{% url 'article_list' %}">All Articles</a>
-        </p>
+        <div class="form-text text-center text-shadow-glow-blue">
+            <form action="" method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button class="btn btn-primary btn-shadow mb-2 text-center" type="submit">Save</button>
+            </form>
+        </div> 
     </div>
 {% endblock content %}

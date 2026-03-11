@@ -30,7 +30,8 @@
             <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
           </li>
           {% if user.is_authenticated %}
-          <li><a href="{% url 'article_new' %}" class="nav-link px-2 link-dark">+ New</a></li>
+          <li calss="nav-item"><a class="nav-link active" href="{% url 'article_list' %}">Articles</a></li>
+          <li><a href="{% url 'article_new' %}" class="nav-link px-2 link-dark">+ New Article</a></li>
         </ul>   
         <div class="mr-auto">
           <ul class="navbar-nav">
