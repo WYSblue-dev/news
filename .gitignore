@@ -1,3 +1,8 @@
 .venv/
 __pycache__/
 db.sqlite3
+.django
+.env
+# I learned today that escapes avoid spaces in the coammand line for cd command
+# also setting up a custom alias for running that commad more quickly in the
+# future for better automation.

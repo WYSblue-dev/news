@@ -12,6 +12,12 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 
+# import the enirons to access its functionality
+from environs import Env
+
+env = Env()
+env.read_env()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,12 +26,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-@&yr)us1l@y2_i__%7+a_n+5y&6cizxmn&=h(omu0szuu15vnu"
+SECRET_KEY = env.str("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG", default=False)
+ALLOWED_HOSTS = [".herokuapp.com", "localhost", "127.0.0.1"]
 
-ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -36,6 +42,11 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    # placing the whitenoise prior to the staticfiles default makes logical
+    # sense
+    # whitenoise does multiple things. It allows additional compression as well
+    # as immutable file storage and sets the appropriate HTTP caching headers
+    "whitenoise.runserver_nostatic",
     "django.contrib.staticfiles",
     # third party apps
     "crispy_forms",
@@ -52,6 +63,8 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    # add the whitenoise middleware here.
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -83,12 +96,7 @@ WSGI_APPLICATION = "django_project.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
+DATABASES = {"default":env.dj_db_url("DATABASE_URL")}
 
 
 # Password validation
@@ -127,6 +135,27 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+# djangos server isn't designed to handle and manage staticfiles.
+# We leave that to the production server to handle. The way we do that is by
+# compiling all of the static files. There is a django command for this
+# collectstatic
+# we run that command for the production server. But first as we can see here we
+# point to the staticfiles with the constant STATIC_ROOT set to its path.
+# I presume this is because this is what django looks at for the collectstatic
+# command
+STATIC_ROOT = BASE_DIR / "staticfiles"
+# storages is used to define how files are stored. We are changing the
+# staticfiles section to use WhiteNoise compression. Which I laymens terms
+# changing how they're stored.
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -139,3 +168,6 @@ LOGOUT_REDIRECT_URL = "home"
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 TIME_ZONE = "America/New_York"
+# needed to give access to untrusted sources to be allowed to make changes to
+# the db through the admin app since our django_app now requires so.
+CSRF_TRUSTED_ORIGINS = ["https://*herokuapp.com"]
