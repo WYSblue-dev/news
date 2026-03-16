@@ -170,4 +170,4 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 TIME_ZONE = "America/New_York"
 # needed to give access to untrusted sources to be allowed to make changes to
 # the db through the admin app since our django_app now requires so.
-CSRF_TRUSTED_ORIGINS = ["https://*herokuapp.com"]
+CSRF_TRUSTED_ORIGINS = ["https://*.herokuapp.com"]
