@@ -1,31 +1,69 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
-
 {% block title %}
 Home
 {% endblock title %}
 
 {% block content %}
 {% if user.is_authenticated %}
-	<br/>
-	<h1 class="text-center text-shadow-glow-blue">Hello, {{ user.username }}! You are {{ user.age }} years old!</h1>
-	<br/>
-	<br/>
-	<div class="card text-center card-border">
-		<form action="{% url 'logout' %}" method="post">
-		{% csrf_token %}
-		{{ form|crispy }}
-		<button class="btn btn-primary btn-shadow text-center"
-		type="submit" name="logout">Log Out</button>
-		</form>
-		<br/>
-		<a class="btn btn-primary btn-shadow" href="{% url 'article_list' %}" role="button">Articles</a>
-		<br/>
-		<a class="btn btn-primary btn-shadow" href="{% url 'article_new' %}" role="button">New Article</a>
-	</div>
+<section class="hero-panel">
+    <p class="eyebrow">Ocean air / neon headlines</p>
+    <h1>Hello, {{ user.username }}.</h1>
+    <p class="hero-copy">
+        A bright local paper for long-form posts, warm-night scrolling, and the
+        stories that keep pulling people back in.
+    </p>
+    <div class="hero-actions">
+        <a class="btn site-button" href="{% url 'article_list' %}" role="button">Browse Articles</a>
+        <a class="btn site-button site-button-muted" href="{% url 'article_new' %}" role="button">Write New Article</a>
+    </div>
+</section>
+
+<section class="feature-grid">
+    <article class="retro-panel">
+        <p class="eyebrow">Profile</p>
+        <h2>Night Desk</h2>
+        <p class="muted-copy">
+            Logged in as <strong>{{ user.username }}</strong>{% if user.age %}, age {{ user.age }}{% endif %}.
+            Keep the board moving with one new article or one fresh comment.
+        </p>
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button class="btn site-button site-button-muted" type="submit" name="logout">Log Out</button>
+        </form>
+    </article>
+</section>
 {% else %}
-<p>
-<!-- detail content about app here for what it is why and how to use it.  -->
-</p>
+<section class="hero-panel">
+    <p class="eyebrow">Miami mood newspaper</p>
+    <h1>Sunset color. Clean layout. Real writing.</h1>
+    <p class="hero-copy">
+        Newspaper blends a coastal neon palette with a simple reading flow for
+        articles, replies, and featured stories.
+    </p>
+    <div class="hero-actions">
+        <a class="btn site-button" href="{% url 'signup' %}" role="button">Create Account</a>
+        <a class="btn site-button site-button-muted" href="{% url 'login' %}" role="button">Log In</a>
+    </div>
+</section>
 {% endif %}
+
+<section class="feature-grid homepage-ranking">
+    <article class="retro-panel">
+        <p class="eyebrow">Top 3</p>
+        <h2>Most Commented</h2>
+        <div class="ranking-list">
+            {% for article in top_articles %}
+            <a class="ranking-item" href="{{ article.get_absolute_url }}">
+                <span class="ranking-index">0{{ forloop.counter }}</span>
+                <span>
+                    <strong>{{ article.title }}</strong>
+                    <small>By {{ article.author }} / {{ article.comment_total }} comment{{ article.comment_total|pluralize }}</small>
+                </span>
+            </a>
+            {% empty %}
+            <p class="muted-copy">No ranked stories yet. Start the conversation with the first article.</p>
+            {% endfor %}
+        </div>
+    </article>
+</section>
 {% endblock content %}

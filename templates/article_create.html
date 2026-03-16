@@ -6,20 +6,27 @@ Artcle Create
 {% endblock title %}
 
 {% block content %}
-<div class="card card-spaced card-border">
-    <div class="card-header">
-        <h1 class="danger-text text-center">Article Creation</h1>
+<section class="section-header">
+    <p class="eyebrow">New Story</p>
+    <h1>Article Creation</h1>
+</section>
+
+<section class="retro-panel editor-panel">
+    <div class="editor-intro">
+        <p class="muted-copy">
+            Draft something sharp. Keep the title clean, keep the body readable,
+            and let the neon framing do the rest.
+        </p>
     </div>
-    <div class="card-body">
-        <form class="update-form"action="" method="post">
+    <div class="editor-form-wrap">
+        <form class="update-form editor-form" action="" method="post">
             {% csrf_token %}
             {{ form|crispy }}
-            <div class="card-footer">
-                <button class="btn btn-primary text-center" type="submit">
-                    Create Article
-                </button>
+            <div class="editor-actions">
+                <a class="editor-backlink" href="{% url 'article_list' %}">Back to Articles</a>
+                <button class="btn site-button" type="submit">Create Article</button>
             </div>
         </form>
     </div>
-</div>
+</section>
 {% endblock content %}

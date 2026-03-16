@@ -2,18 +2,26 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-    <div class="card card-spaced card-border">
-        <div class="card-body">
-            <form class="update-form" action="" method="post">
-                {% csrf_token %}
-                {{ form|crispy }}
-                <button class="btn btn-primary btn-shadow" type="submit">Finish Edit</button>
-            </form>
-        </div>
+<section class="section-header">
+    <p class="eyebrow">Rewrite</p>
+    <h1>Edit Article</h1>
+</section>
+
+<section class="retro-panel editor-panel">
+    <div class="editor-intro">
+        <p class="muted-copy">
+            Tighten the draft, reshape the tone, and keep the article polished.
+        </p>
     </div>
-    <div class="danger-text text-shadow-glow text-center">
-        <h3>
-            Back to <a href="{% url 'article_list' %}">Articles</a>
-        </h3>
+    <div class="editor-form-wrap">
+        <form class="update-form editor-form" action="" method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="editor-actions">
+                <a class="editor-backlink" href="{% url 'article_list' %}">Back to Articles</a>
+                <button class="btn site-button" type="submit">Finish Edit</button>
+            </div>
+        </form>
     </div>
+</section>
 {% endblock content %}

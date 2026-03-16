@@ -2,46 +2,46 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-    <div class="card">
-        <div class="card-header text-center mt-4">
-            <h3>
-                {{ article.title }} | {{ article.date|date:'M d Y, g:i A' }}
-            </h3>
-        </div>
-        <div class="card-body">
-            <!-- where does the fw-bold class come from? -->
-            <span class="fw-bold text-center">
-                <p>
-                    {{ article.body }}
-                    <!-- take note this is possible because we're working directly with the obj -->
-                    {% if article.author.pk == request.user.pk %}
-                        <br/>
-                        <a href="{% url 'article_edit' article.pk %}">Edit</a> |
-                        <a href="{% url 'article_delete' article.pk %}">Delete</a>
-                    {% endif %}
-                </p>
-            </span>
-        </div>
+<article class="retro-panel article-detail-panel">
+    <div class="article-meta">
+        <span>{{ article.date|date:'M d Y, g:i A' }}</span>
+        <span>By {{ article.author }}</span>
+        <span>{{ article.comment_set.count }} comment{{ article.comment_set.count|pluralize }}</span>
+    </div>
+    <h1>{{ article.title }}</h1>
+    <p class="article-body article-body-full">{{ article.body }}</p>
+    <div class="article-actions">
+        {% if article.author.pk == request.user.pk %}
+        <a href="{% url 'article_edit' article.pk %}">Edit</a>
+        <a href="{% url 'article_delete' article.pk %}">Delete</a>
+        {% endif %}
+    </div>
+</article>
 
-        <div class="card-footer text-center text-muted">
-            <h4><b>Comments</b></h4>
+<section class="comment-section">
+    <div class="retro-panel">
+        <p class="eyebrow">Responses</p>
+        <h2>Comments</h2>
+        <div class="comment-list">
             {% for comment in article.comment_set.all %}
-                <!-- if we didn't use a format str to shorten comment only -->
-                {{ comment.comment }} &middot;
-                <br/>
-                {{ comment.date_added|date:'M Y, g:i A'}}
-                <br/>
-                {{ comment.author|upper }}
+            <article class="comment-item">
+                <p>{{ comment.comment }}</p>
+                <small>{{ comment.author|upper }} / {{ comment.date_added|date:'M d Y, g:i A' }}</small>
+            </article>
             {% empty %}
-                <b>NO COMMENTS</b>
+            <p class="muted-copy">No comments yet.</p>
             {% endfor %}
         </div>
-        <div class="form-text text-center text-shadow-glow-blue">
-            <form action="" method="post">
-                {% csrf_token %}
-                {{ form|crispy }}
-                <button class="btn btn-primary btn-shadow mb-2 text-center" type="submit">Save</button>
-            </form>
-        </div> 
     </div>
+
+    <div class="retro-panel">
+        <p class="eyebrow">Leave a note</p>
+        <h2>Add Comment</h2>
+        <form action="" method="post" class="comment-form">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button class="btn site-button" type="submit">Save</button>
+        </form>
+    </div>
+</section>
 {% endblock content %}

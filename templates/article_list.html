@@ -5,47 +5,31 @@ Articles
 {% endblock title %}
 
 {% block content %}
-    <p>
-        {% for article in article_list %}
-        <div class="card">
-            <div class="card-header text-center">
-                <span class="fw-bold">
-                    <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
-                </span> &middot;
-                <span class="text-muted">by {{ article.author }} |
-                    <!-- the A gives us the am or pm whereas g is the hour with no leading
-                     zero opposed to the use of the h which gives us leading zeros-->
-                    {{ article.date|date:'M d Y, g:i A '}}
-                </span>
-            </div>
-            <div class="card-body text-center">
-                <h3>
-                    {{ article.author }}
-                </h3>
-                {{ article.body }}
-                {% if article.author.pk == request.user.pk %}
-                    <br/>
-                    <a href="{% url 'article_edit' article.pk %}">Edit</a> | 
-                    <a href="{% url 'article_delete' article.pk %}">Delete</a>
-                {% endif %}
-                <!-- adds the ability to take the user to the article  -->
-                | <a href="{{ article.get_absolute_url }}">+New Comment</a>
-            </div>
-            <div class="card-footer text-center">
-                <!-- take note we us an sql query directly to be able to access the
-                 comments for the article. -->
-                <h4><b>Comments</b></h4>
-                {% for comment in article.comment_set.all %}
-                    <span class="fw-bold">{{ comment.comment }}</span> | {{ comment.date_added|date:'M Y, g:i A '}}
-                    <br/>
-                {% empty %}
-                    <b>NO COMMENTS</b>
-                {% endfor %}
-            </div>
-        </div>
-        <br />
-        {% empty %}
-        No articles have been created yet.
-        {% endfor %}
-    </p>
+<section class="section-header">
+    <p class="eyebrow">Archive</p>
+    <h1>All Articles</h1>
+</section>
+
+{% for article in article_list %}
+<article class="retro-panel article-panel">
+    <div class="article-meta">
+        <span>{{ article.date|date:'M d Y, g:i A' }}</span>
+        <span>By {{ article.author }}</span>
+        <span>{{ article.comment_set.count }} comment{{ article.comment_set.count|pluralize }}</span>
+    </div>
+    <h2><a class="article-link" href="{{ article.get_absolute_url }}">{{ article.title }}</a></h2>
+    <p class="article-body">{{ article.body|truncatewords:55 }}</p>
+    <div class="article-actions">
+        <a href="{{ article.get_absolute_url }}">Read and comment</a>
+        {% if article.author.pk == request.user.pk %}
+        <a href="{% url 'article_edit' article.pk %}">Edit</a>
+        <a href="{% url 'article_delete' article.pk %}">Delete</a>
+        {% endif %}
+    </div>
+</article>
+{% empty %}
+<div class="retro-panel">
+    <p class="muted-copy">No articles have been created yet.</p>
+</div>
+{% endfor %}
 {% endblock content %}
