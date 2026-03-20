@@ -27,6 +27,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env.str("SECRET_KEY")
+# this is the email smtp setup for user to recieve password reset emails.
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = env.str("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env.str("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=False)
@@ -40,7 +48,6 @@ ALLOWED_HOSTS = [
     "www.forgeandfocus.studio",
     "forgeandfocus.studio",
 ]
-
 
 
 # Application definition
@@ -105,7 +112,7 @@ WSGI_APPLICATION = "django_project.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {"default":env.dj_db_url("DATABASE_URL")}
+DATABASES = {"default": env.dj_db_url("DATABASE_URL")}
 
 
 # Password validation
@@ -175,7 +182,6 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "home"
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 TIME_ZONE = "America/New_York"
 # needed to give access to untrusted sources to be allowed to make changes to
 # the db through the admin app since our django_app now requires so.
