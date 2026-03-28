@@ -47,8 +47,6 @@ ALLOWED_HOSTS = [
     ".herokuapp.com",
     "www.forgeandfocus.com",
     "forgeandfocus.com",
-    "www.forgeandfocus.studio",
-    "forgeandfocus.studio",
 ]
 
 
