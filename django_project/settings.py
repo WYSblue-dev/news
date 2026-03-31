@@ -40,15 +40,7 @@ DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=False)
-ALLOWED_HOSTS = [
-    ".herokuapp.com",
-    "localhost",
-    "127.0.0.1",
-    ".herokuapp.com",
-    "www.forgeandfocus.com",
-    "forgeandfocus.com",
-]
-
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default="localhost")
 
 # Application definition
 
@@ -185,4 +177,7 @@ LOGOUT_REDIRECT_URL = "home"
 TIME_ZONE = "America/New_York"
 # needed to give access to untrusted sources to be allowed to make changes to
 # the db through the admin app since our django_app now requires so.
-CSRF_TRUSTED_ORIGINS = ["https://*.herokuapp.com"]
+CSRF_TRUSTED_ORIGINS = [
+    "https://forgeandfocus.studio",
+    "https://www.forgeandfocus.studio.",
+]
